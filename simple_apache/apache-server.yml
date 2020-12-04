@@ -1,0 +1,11 @@
+- hosts: 3.7.45.151
+  tasks:
+          - package : 
+                name: "httpd"
+                state: present
+          - copy:
+                content: "Kaushal webpage1212  34"
+                dest: /var/www/html/kush.html
+          - service:
+                name: "httpd"
+                state: started

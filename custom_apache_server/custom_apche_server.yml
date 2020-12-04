@@ -1,0 +1,32 @@
+- hosts: 52.66.69.185
+  vars_prompt:
+          - name: server_root
+            private: no
+            prompt: " Enter Document Root Directory : " 
+
+          - name: port
+            private: no
+            prompt: " Enter Desired Port : " 
+  tasks:
+          - package:
+                  name: "httpd"
+                  state: present
+          - name: "Custum Directory Root"
+            file:
+                  state: directory
+                  path: "{{ server_root }}"
+          - template : 
+                  dest: "/etc/httpd/conf.d/custom.conf"
+                  src: "setting.conf"
+          - copy:
+                  dest: "{{ server_root }}/index.html"
+                  content: "Hi from kush"
+          - service:
+                  name: "httpd"
+                  state: started
+          - firewalld:
+                   port: "{{ port }}/tcp"
+                   state: enabled
+                   permanent: yes
+                   immediate: yes
+

@@ -1,0 +1,11 @@
+- hosts: 3.7.45.151
+  tasks:
+          - file:
+                path: /var/www
+                state: absent 
+          - service:
+                name: "httpd"
+                state: stopped
+          - package : 
+                name: "httpd"
+                state: absent
