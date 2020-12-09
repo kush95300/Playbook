@@ -1,0 +1,27 @@
+- hosts: test
+  vars_prompt:
+          - name: name
+            prompt: "Enter Container name (e.g : Webserver ) "
+            private: no
+  tasks:
+          - name: "Delete Container httpd "
+            community.general.docker_container:
+                    name: "{{ name }}"
+                    state: absent
+          - name: " Docker uninstallation"
+            package:
+                  name: "docker"
+                  state: absent
+          - name: "Docker  pip lib uninstallation"
+            pip:
+                  name: docker
+                  state: absent
+          - name: "Python and pip uninstalled"
+            package:
+                  name: 
+                     - "python2-pip"
+                  state: absent
+          - name: "Delete volume Website "
+            file:
+                    state: absent
+                    path: "/website"

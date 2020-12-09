@@ -1,0 +1,48 @@
+- hosts: test
+  vars_prompt:
+          - name: name
+            prompt: "Enter Container name (e.g : Webserver ) "
+            private: no
+          - name: port
+            prompt: "Enter Port no. (e.g : 8080 ) "
+            private: no
+  tasks:
+          - name: " Docker Installation"
+            package:
+                  name: "docker"
+                  state: present
+          - name: "Docker Service Start and Enabled"
+            service:
+                  name: "docker"
+                  state: started 
+                  enabled: yes
+          - name: "Python and pip Installed"
+            package:
+                  name: 
+                     - "python"
+                     - "python2-pip"
+                  state: present
+          - name: "Docker  pip lib installation"
+            pip:
+                  name: docker
+          - name: "Create volume Website "
+            file:
+                    state: "directory"
+                    path: "/website"
+          - name: "Website Webpage sent to volume"
+            copy:
+                  dest: "/website/index22.php"
+                  content: >
+                          <pre>
+                          <?php
+
+                          print `ifconfig`
+
+                          ?>
+                          <\pre>      
+          - name: "Launch Container httpd "
+            community.general.docker_container:
+                    name: "{{ name }}"
+                    image: "vimal13/apache-webserver-php"
+                    ports: "{{ port }}:80"
+                    volumes: "/website/:/var/www/html/" 
