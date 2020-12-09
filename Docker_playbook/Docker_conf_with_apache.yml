@@ -1,5 +1,8 @@
-- hosts: test
+- hosts: "{{ host }}"
   vars_prompt:
+          - name: host
+            prompt: "Enter Host (e.g : all ) "
+            private: no
           - name: name
             prompt: "Enter Container name (e.g : Webserver ) "
             private: no
@@ -31,7 +34,7 @@
                     path: "/website"
           - name: "Website Webpage sent to volume"
             copy:
-                  dest: "/website/index22.php"
+                  dest: "/website/index.php"
                   content: >
                           <pre>
                           <?php
@@ -40,7 +43,7 @@
 
                           ?>
                           <\pre>      
-          - name: "Launch Container httpd "
+          - name: "Launch Container httpd and Website hosted"
             community.general.docker_container:
                     name: "{{ name }}"
                     image: "vimal13/apache-webserver-php"

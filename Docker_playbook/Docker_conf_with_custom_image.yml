@@ -6,6 +6,10 @@
           - name: name
             prompt: "Enter Container Image (e.g : Webserver ) "
             private: no
+          - name: port
+            prompt: "Enter port no. (e.g : 5050 ) "
+            private: no
+  tasks:
   tasks:
           - name: " Docker Installation"
             package:
@@ -44,9 +48,9 @@
 
                           ?>
                           <\pre>"      
-          - name: "Launch Container httpd "
+          - name: "Launch Container {{ name }} "
             community.general.docker_container:
                     name: "{{ name }}"
                     image: "{{ image }}"
-                    ports: "9090:80"
+                    ports: "{{ port }}:80"
                     volumes: "/website/:/usr/local/apache2/htdocs/" 
