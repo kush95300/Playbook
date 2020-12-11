@@ -1,0 +1,5 @@
+- hosts: Loadbalancer
+  tasks:
+            name: "Installation of Load Balancer Software"
+            package: "haproxy"
+          
