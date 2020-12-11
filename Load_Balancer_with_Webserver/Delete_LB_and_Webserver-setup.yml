@@ -1,0 +1,26 @@
+- hosts: webserver
+  tasks:
+          - name: "Deleting Webserver"
+            package:
+                    name:
+                            - "httpd"
+                            - "php"
+                    state: absent
+
+          - name: "Creating Website Volume"
+            file:
+                    state: "absent"
+                    path: "/website"
+
+
+- hosts: Loadbalancer
+  tasks:
+         - name: "Deleting LB"
+           package:
+                   name: "haproxy"
+                   state: absent
+
+         - name: "Configure LB"
+           file:
+                   state: "absent"
+                   path: "/etc/haproxy"

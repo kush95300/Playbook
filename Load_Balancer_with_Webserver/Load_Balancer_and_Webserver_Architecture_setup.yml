@@ -1,0 +1,66 @@
+- hosts: webserver
+  tasks:
+          - name: "Installing Webserver"
+            package:
+                    name:
+                            - "httpd"
+                            - "php"
+                    state: present
+
+          - name: "Creating Website Volume"
+            file:
+                    state: "directory"
+                    path: "/website"
+
+          - name: "Configuring Server"
+            copy: src={{ item.src }} dest={{ item.dest }}
+            with_items:
+                   - { src: "webpage.php" , dest: "/var/www/html" }
+
+                   - {  src: "webpage.php" , dest: "/website" }
+            notify: "reload webserver"
+
+          - name: "Start Service"
+            service:
+                    name: "httpd"
+                    state: started 
+                    enabled: yes
+
+  handlers:
+          - name: "reload webserver"
+            service:
+                    name: "httpd"
+                    state: reloaded
+
+
+
+- hosts: Loadbalancer
+  vars_prompt:
+        name: port
+        prompt: "Enter Load Balancer Port"
+        private: no
+
+  vars:
+        i: "0.0.0.0"
+  tasks:
+         - name: "Installing LB"
+           package:
+                   name: "haproxy"
+                   state: present
+
+         - name: "Configure LB"
+           template:
+                   src: "haproxy.cfg"
+                   dest: "/etc/haproxy"
+           notify: "Reload LB"
+
+         - name: " Starting LB"
+           service:
+               name: "haproxy"
+               state: started
+
+  handlers:
+          - name: "Reload LB"
+            service:
+                 name: "haproxy"
+                 state: reloaded
