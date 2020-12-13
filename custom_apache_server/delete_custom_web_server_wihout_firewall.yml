@@ -20,9 +20,4 @@
           - file:
                   path: "{{ server_root }}"
                   state: absent
-          - firewalld:
-                   port: "{{ port }}/tcp"
-                   state: disabled
-                   permanent: yes
-                   immediate: yes
 
