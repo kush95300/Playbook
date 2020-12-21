@@ -1,0 +1,38 @@
+---
+- name: "Create Aws Instance"
+  hosts: localhost
+  become: yes
+  become_user: root 
+  vars_files:
+          - ~/secret.yml
+          - type/default.yml
+  vars:
+                  ansible_python_interpreter: /usr/bin/python
+  tasks:
+          - package:
+                  name: 
+                   - "httpd"
+                   - "python3"
+                   - "python2-pip"
+                  state: present
+          - pip:
+                  name: boto3
+          - name: " Createing instance"
+            ec2_instance:
+                    name: "{{ i_name }}"
+                    key_name: "{{ key }}"
+                    instance_type: "{{ i_type }}"
+                    image_id: "{{ img }}"
+                    wait: yes
+                    security_group: "{{ sg }}"
+                    vpc_subnet_id: "{{ subnet }}"
+                    network:
+                            assign_public_ip: yes
+                    aws_access_key: "{{ pass }}"
+                    aws_secret_key: "{{ secret_pass }}"
+                    region: "{{ zone }}"
+            register: x
+
+          - copy:
+                  content: "{{ x }}"
+                  dest: "~/instance_data.yml"

@@ -1,4 +1,6 @@
-- hosts: 3.7.45.151
+- hosts: auto
+  become_user: root
+  become: yes
   tasks:
           - package : 
                 name: "httpd"

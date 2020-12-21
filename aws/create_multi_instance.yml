@@ -1,0 +1,55 @@
+---
+- name: "Create Aws Instance"
+  hosts: localhost
+  become: yes
+  become_user: root 
+  vars_files:
+          - ~/secret.yml
+          - type/default.yml
+  vars:
+                  ansible_python_interpreter: /usr/bin/python
+                  inventory: inventory.txt
+  tasks:
+          - package:
+                  name: 
+                   - "httpd"
+                   - "python3"
+                   - "python2-pip"
+                  state: present
+          - pip:
+                  name: "{{ item }}"
+            loop:
+                    - boto
+                    - boto3
+          - name: " Createing instance"
+            ec2:
+                    # name: "{{ i_name }}"
+                    key_name: "{{ key }}"
+                    instance_type: "{{ i_type }}"
+                    image: "{{ img }}"
+                    wait: yes
+                    group_id: "{{ sg }}"
+                    vpc_subnet_id: "{{ subnet }}"
+                    #network:
+                    assign_public_ip: yes
+                    aws_access_key: "{{ pass }}"
+                    aws_secret_key: "{{ secret_pass }}"
+                    count: 3
+                    region: "{{ zone }}"
+            register: ip
+
+          - block:
+                  - name: "updating topic"
+                    shell: "grep 'auto_webservers' {{ inventory }}"
+                    changed_when: false
+            rescue:
+                  - name: "Creating group tag"
+                    shell: "echo -e '\n[auto_webservers]' | cat >> {{ inventory }}"
+          - name: "updating Inventory"
+            lineinfile:
+                  dest: "{{ inventory }}"
+                  regexp: '^[auto_weservers]'
+                  line: "{{ item ['public_ip'] }} ansible_user=ec2-user ansible_ssh_private_key_file=~/newkey.pem  ansible-connection=ssh"
+            loop: "{{ ip.instances }}"
+          - meta: refresh_inventory
+
