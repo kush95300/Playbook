@@ -4,4 +4,5 @@ i_type: "t2.micro"
 img: 'ami-08f63db601b82ff5f'
 subnet: 'subnet-3bb8bd53'
 sg: 'sg-01a26d3db794b83f8'
+counts: 1
 zone: 'ap-south-1'

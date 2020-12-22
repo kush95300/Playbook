@@ -23,7 +23,8 @@
                     - boto3
           - name: " Createing instance"
             ec2:
-                    # name: "{{ i_name }}"
+                    instance_tags:
+                            name: "{{ i_name }}"
                     key_name: "{{ key }}"
                     instance_type: "{{ i_type }}"
                     image: "{{ img }}"
@@ -34,7 +35,7 @@
                     assign_public_ip: yes
                     aws_access_key: "{{ pass }}"
                     aws_secret_key: "{{ secret_pass }}"
-                    count: 3
+                    count: "{{ counts }}" 
                     region: "{{ zone }}"
             register: ip
 
