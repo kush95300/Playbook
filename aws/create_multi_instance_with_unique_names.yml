@@ -19,9 +19,12 @@
           - name: "Installing Boto 3"
             pip:
                   name: boto3
+          - name: "Setting Count"
+            set_fact:
+                  loop_index: "{{range(1, counts + 1) | list}}"
           - name: " Createing instance"
             ec2_instance:
-                    name: "{{ i_name }}-1"
+                    name: "{{ i_name }}-{{ item }}"
                     key_name: "{{ key }}"
                     instance_type: "{{ i_type }}"
                     image_id: "{{ img }}"
@@ -31,14 +34,17 @@
                     vpc_subnet_id: "{{ subnet }}"
                     network:
                             assign_public_ip: yes
-                    tags:
-                            tag: "{{ tag }}"
                     aws_access_key: "{{ pass }}"
                     aws_secret_key: "{{ secret_pass }}"
                     region: "{{ zone }}"
+                    tags:
+                            tag: "{{ tag }}"
             register: kush
-            loop:
-                   - '1'
+            loop: "{{ loop_index }}"
+            #loop:
+            #       - '1'
+            #       - '2'
+            #       - '3'
 
           - name: "Instance Detail"
             debug:
