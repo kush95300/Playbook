@@ -1,0 +1,19 @@
+- hosts: webserver
+  become: yes
+  become_user: root
+  vars_files: 
+      -  "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version']}}.yml"
+  tasks:
+          - name: "Stopping Service"
+            service:
+                name: "{{ service_name }}"
+                state: stopped
+            ignore_errors: yes
+          - name: " Deleting Package"
+            package:
+                name: "{{ pkg_name}}"
+                state: absent
+          - name: "Deleting Directories"
+            file: 
+                dest: "/var/www"
+                state: absent

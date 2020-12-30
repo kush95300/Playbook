@@ -1,0 +1,22 @@
+- hosts: webserver
+  become: yes
+  become_user: root
+  vars_files: 
+      -  "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version']}}.yml"
+  tasks:
+          - name: "Installing Package"
+            package:
+                name: "{{ pkg_name}}"
+            #when: os_name == "Redhat:8.0"
+          - name: "Creating Folder"
+            file:
+               path: "/var/www/html"
+               state: directory
+          - name: "Creating Webpage"
+            copy: 
+                dest: "/var/www/html/index.html"
+                content: "You are in {{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }} OS"
+          - name: "Starting Service"
+            service:
+                name: "{{ service_name }}"
+                state: started
