@@ -18,6 +18,7 @@
 
                    - pip:
                        name: gdown
+                       executable: pip3
                    - shell: "gdown --id {{ file_id }}"
 
 - name: "Configuring Datanode"
