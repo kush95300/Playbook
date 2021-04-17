@@ -13,10 +13,11 @@
                    - package:
                              name:
                                     - "python3"
-                                    - "python2-pip"
+                                    - "python3-pip"
 
                    - pip:
                        name: gdown
+                       executable: pip3
                    - shell: "gdown --id {{ file_id }}"
 
 - name: "Configuring Namenode"
